@@ -8,11 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import model.Nbp;
 import model.NbpRequestData;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import service.NbpService;
+
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/")
@@ -27,8 +26,12 @@ public class NbpController {
             @ApiResponse(responseCode = "400", content = { @Content()}, description = "Wrong JSON!"),
             @ApiResponse(responseCode = "500", content = { @Content()}, description = "Internal server error!")
     })
-    @PostMapping("getMidForSection")
-    public ResponseEntity<Nbp> queryNbp(@RequestBody @Parameter(name = "nbpRequestData") NbpRequestData nbpRequestData) {
+    @GetMapping("getMidForSection")
+    public ResponseEntity<Nbp> queryNbp(@RequestParam @Parameter(name = "nbpRequestData") String code, @RequestParam Date startDate, @RequestParam Date endDate) {
+        NbpRequestData nbpRequestData = new NbpRequestData();
+        nbpRequestData.currencyCode = code;
+        nbpRequestData.sectionStart = startDate;
+        nbpRequestData.sectionEnd = endDate;
         Nbp nbp = nbpService.queryCurrencyMidForSection(nbpRequestData);
         return ResponseEntity.ok(nbp);
     }
